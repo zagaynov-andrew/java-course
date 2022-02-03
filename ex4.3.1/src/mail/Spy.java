@@ -5,24 +5,34 @@ import java.util.logging.Logger;
 
 public class Spy implements MailService {
 
-    static final Logger LOGGER = Logger.getLogger(MailService.class.getName());
+    private final Logger logger;
+
+    public Spy(Logger logger) {
+        this.logger = logger;
+    }
 
     @Override
     public Sendable processMail(Sendable mail) {
-        final MailMessage mailMessage = (MailMessage) mail;
-        final String TARGET = "Austin Powers";
-        final String FROM   = mailMessage.getFrom();
-        final String TO     = mailMessage.getTo();
+        final String      target = "Austin Powers";
+        final String      from;
+        final String      to;
+        final MailMessage mailMessage;
 
-        if (FROM.equals(TARGET)) {
-            LOGGER.log(Level.WARNING, "Detected target mail correspondence: from {0} to {1} \"{2}\"",
-                    new Object[] { FROM, TO, mailMessage.getMessage() });
+        if (mail.getClass() != MailMessage.class)
+            return mail;
+        mailMessage = (MailMessage) mail;
+        from = mailMessage.getFrom();
+        to   = mailMessage.getTo();
+
+        if (from.equals(target) || to.equals(target)) {
+            logger.log(Level.WARNING, "Detected target mail correspondence: from {0} to {1} \"{2}\"",
+                    new Object[] { from, to, mailMessage.getMessage() });
         }
         else {
-            LOGGER.log(Level.INFO, "Usual correspondence: from {0} to {1}",
-                    new Object[] { FROM, TO });
+            logger.log(Level.INFO, "Usual correspondence: from {0} to {1}",
+                    new Object[] { from, to });
         }
-        RealMailService realMailService = new RealMailService();
+//        RealMailService realMailService = new RealMailService();
 //        realMailService.processMail(mail);
         return mail;
     }
