@@ -2,6 +2,7 @@ public class Main {
 
     public static void main(String[] args) {
 
+        // test
         Pair<Integer, String> pair = Pair.of(1, "hello");
         Integer i = pair.getFirst(); // 1
         String s = pair.getSecond(); // "hello"
